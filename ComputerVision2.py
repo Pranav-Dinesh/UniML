@@ -2,7 +2,7 @@ import tensorflow as tf
 
 class myCallback(tf.keras.callbacks.Callback):
   def on_epoch_end(self, epoch, logs={}):
-    if(logs.get('acc')>0.6):
+    if(logs.get('acc')>0.6):  #or I could say 'loss' < 0.4
       print("\nReached 60% accuracy so cancelling training!")
       self.model.stop_training = True
 
@@ -11,7 +11,7 @@ mnist = tf.keras.datasets.fashion_mnist
 (x_train, y_train),(x_test, y_test) = mnist.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
-callbacks = myCallback()
+callbacks = myCallback() #instantiating
 
 model = tf.keras.models.Sequential([
   tf.keras.layers.Flatten(input_shape=(28, 28)),
@@ -22,4 +22,4 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-model.fit(x_train, y_train, epochs=10, callbacks=[callbacks])
+model.fit(x_train, y_train, epochs=10, callbacks=[callbacks]) #the new parameter is added

@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 class myCallback(tf.keras.callbacks.Callback):
-  def on_epoch_end(self, epoch, logs={}):
+  def on_epoch_end(self, epoch, logs={}): #this function is called when an epoch ends and decides if the next epoch must be continued with.
     if(logs.get('acc')>0.6):  #or I could say 'loss' < 0.4
       print("\nReached 60% accuracy so cancelling training!")
       self.model.stop_training = True

@@ -1,6 +1,12 @@
 import tensorflow as tf
 mnist = tf.keras.datasets.fashion_mnist
 
+#class myCallback (tf.keras.callbacks.Callback):
+#  def on_epoch_end(self, epoch, logs={}):
+#   if(logs.get('acc')>0.998):
+#      print("Reached 99.8% accuracy so cancelling training!")
+#      self.model.stop_training = True
+#callbacks=myCallback()
 (training_images, training_labels), (test_images, test_labels) = mnist.load_data()
 
 #Step 1: Gather your data
@@ -29,5 +35,6 @@ model = tf.keras.models.Sequential([
   
 model.compile(optimizer='adam',loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 model.fit(training_images, training_labels, epochs=5)
+#model.fit(training_images, training_labels, epochs=20, callbacks=[callbacks])
 test_loss, test_acc = model.evaluate(test_images, test_labels)
 print(test_acc)

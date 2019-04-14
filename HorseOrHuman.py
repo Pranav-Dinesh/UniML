@@ -2,6 +2,10 @@
     https://storage.googleapis.com/laurencemoroney-blog.appspot.com/horse-or-human.zip \
     -O /tmp/horse-or-human.zip
     
+!wget --no-check-certificate \
+    https://storage.googleapis.com/laurencemoroney-blog.appspot.com/validation-horse-or-human.zip \
+    -O /tmp/validation-horse-or-human.zip
+    
 import os
 import zipfile
 
@@ -9,6 +13,9 @@ import zipfile
 local_zip = '/tmp/horse-or-human.zip'
 zip_ref = zipfile.ZipFile(local_zip, 'r')
 zip_ref.extractall('/tmp/horse-or-human')
+local_zip = '/tmp/validation-horse-or-human.zip'
+zip_ref = zipfile.ZipFile(local_zip, 'r')
+zip_ref.extractall('/tmp/validation-horse-or-human')
 zip_ref.close()
 
 # Directory with our training horse pictures
@@ -16,6 +23,9 @@ train_horse_dir = os.path.join('/tmp/horse-or-human/horses')
 
 # Directory with our training human pictures
 train_human_dir = os.path.join('/tmp/horse-or-human/humans')
+
+validation_horse_dir = os.path.join('/tmp/validation-horse-or-human/horses')
+validation_human_dir = os.path.join('/tmp/validation-horse-or-human/humans')
 
 #To see how the filenames look like
 train_horse_names = os.listdir(train_horse_dir)
@@ -111,8 +121,10 @@ model.compile(loss='binary_crossentropy',
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
+#Image Generators will assign labels automatically based on the directory
 # All images will be rescaled by 1./255
 train_datagen = ImageDataGenerator(rescale=1/255)
+validation_datagen = ImageDataGenerator(rescale=1/255)
 
 # Flow training images in batches of 128 using train_datagen generator
 train_generator = train_datagen.flow_from_directory(
@@ -121,12 +133,21 @@ train_generator = train_datagen.flow_from_directory(
         batch_size=128,
         # Since we use binary_crossentropy loss, we need binary labels
         class_mode='binary')
+
+validation_generator = validation_datagen.flow_from_directory(
+        '/tmp/validation-horse-or-human/',  # This is the source directory for training images
+        target_size=(300, 300),  # All images will be resized to 150x150
+        batch_size=32,
+        # Since we use binary_crossentropy loss, we need binary labels
+        class_mode='binary')
         
 history = model.fit_generator(
       train_generator,
       steps_per_epoch=8,  
       epochs=15,
-      verbose=1)
+      verbose=1
+      validation_data = validation_generator,
+      validation_steps=8)
            
 import numpy as np
 from google.colab import files

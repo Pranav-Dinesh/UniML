@@ -1,2 +1,2 @@
-# UniML
-Basic code for networks using Keras and other frameworks.
+# Deep Learning - Course 
+Contains code for basic Deep Learning examples, with quiz questions embedded.
